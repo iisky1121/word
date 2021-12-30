@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.segmentation.impl;
@@ -76,7 +74,7 @@ public class MinimumMatchingTest {
         text.add("木有");
         text.add("下雨天留客天天留我不留");
         text.add("叔叔亲了我妈妈也亲了我");
-        
+
         List<String> expResult = new ArrayList<>();
         expResult.add("[长春, 市长, 春节, 致辞]");
         expResult.add("[杨]");
@@ -117,10 +115,10 @@ public class MinimumMatchingTest {
         expResult.add("[下雨, 天, 留客, 天天, 留, 我, 不留]");
         expResult.add("[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]");
         expResult.add("[白马, 非, 马]");
-        
-        for(int i=0; i<text.size(); i++){
+
+        for (int i = 0; i < text.size(); i++) {
             List<Word> result = segmentation.seg(text.get(i));
-            for(Word word : result){
+            for (Word word : result) {
                 word.setPartOfSpeech(null);
             }
             assertEquals(expResult.get(i).toString(), result.toString());

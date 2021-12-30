@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.segmentation;
@@ -29,7 +27,7 @@ import java.util.Objects;
  * Word
  * @author 杨尚川
  */
-public class Word implements Comparable{
+public class Word implements Comparable {
     private String text;
     private String acronymPinYin;
     private String fullPinYin;
@@ -40,7 +38,7 @@ public class Word implements Comparable{
     //权重，用于词向量分析
     private Float weight;
 
-    public Word(String text){
+    public Word(String text) {
         this.text = text;
     }
 
@@ -59,7 +57,7 @@ public class Word implements Comparable{
     }
 
     public String getAcronymPinYin() {
-        if(acronymPinYin==null){
+        if (acronymPinYin == null) {
             return "";
         }
         return acronymPinYin;
@@ -70,7 +68,7 @@ public class Word implements Comparable{
     }
 
     public String getFullPinYin() {
-        if(fullPinYin==null){
+        if (fullPinYin == null) {
             return "";
         }
         return fullPinYin;
@@ -97,28 +95,28 @@ public class Word implements Comparable{
     }
 
     public List<Word> getSynonym() {
-        if(synonym==null){
+        if (synonym == null) {
             return Collections.emptyList();
         }
         return synonym;
     }
 
     public void setSynonym(List<Word> synonym) {
-        if(synonym!=null){
+        if (synonym != null) {
             Collections.sort(synonym);
             this.synonym = synonym;
         }
     }
 
     public List<Word> getAntonym() {
-        if(antonym==null){
+        if (antonym == null) {
             return Collections.emptyList();
         }
         return antonym;
     }
 
     public void setAntonym(List<Word> antonym) {
-        if(antonym!=null){
+        if (antonym != null) {
             Collections.sort(antonym);
             this.antonym = antonym;
         }
@@ -150,27 +148,27 @@ public class Word implements Comparable{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder str = new StringBuilder();
-        if(text!=null){
+        if (text != null) {
             str.append(text);
         }
-        if(acronymPinYin!=null){
+        if (acronymPinYin != null) {
             str.append(" ").append(acronymPinYin);
         }
-        if(fullPinYin!=null){
+        if (fullPinYin != null) {
             str.append(" ").append(fullPinYin);
         }
-        if(partOfSpeech!=null){
+        if (partOfSpeech != null) {
             str.append("/").append(partOfSpeech.getPos());
         }
-        if(frequency>0){
+        if (frequency > 0) {
             str.append("/").append(frequency);
         }
-        if(synonym!=null){
+        if (synonym != null) {
             str.append(synonym.toString());
         }
-        if(antonym!=null){
+        if (antonym != null) {
             str.append(antonym.toString());
         }
         return str.toString();
@@ -178,20 +176,20 @@ public class Word implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        if(this == o){
+        if (this == o) {
             return 0;
         }
-        if(this.text == null){
+        if (this.text == null) {
             return -1;
         }
-        if(o == null){
+        if (o == null) {
             return 1;
         }
-        if(!(o instanceof Word)){
+        if (!(o instanceof Word)) {
             return 1;
         }
-        String t = ((Word)o).getText();
-        if(t == null){
+        String t = ((Word) o).getText();
+        if (t == null) {
             return 1;
         }
         return this.text.compareTo(t);

@@ -1,35 +1,38 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.*;
+import org.apdplat.word.recognition.StopWord;
 import org.apdplat.word.segmentation.SegmentationAlgorithm;
 import org.apdplat.word.segmentation.SegmentationFactory;
-import org.apdplat.word.recognition.StopWord;
 import org.apdplat.word.segmentation.Word;
 import org.apdplat.word.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 中文分词基础入口
@@ -38,7 +41,8 @@ import org.slf4j.LoggerFactory;
  * @author 杨尚川
  */
 public class WordSegmenter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WordSegmenter.class);    
+    private static final Logger LOGGER = LoggerFactory.getLogger(WordSegmenter.class);
+
     /**
      * 对文本进行分词，保留停用词
      * 可指定其他分词算法
@@ -46,18 +50,20 @@ public class WordSegmenter {
      * @param segmentationAlgorithm 分词算法
      * @return 分词结果
      */
-    public static List<Word> segWithStopWords(String text, SegmentationAlgorithm segmentationAlgorithm){
+    public static List<Word> segWithStopWords(String text, SegmentationAlgorithm segmentationAlgorithm) {
         return SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
     }
+
     /**
      * 对文本进行分词，保留停用词
      * 使用双向最大匹配算法
      * @param text 文本
      * @return 分词结果
      */
-    public static List<Word> segWithStopWords(String text){
+    public static List<Word> segWithStopWords(String text) {
         return SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore).seg(text);
     }
+
     /**
      * 对文本进行分词，移除停用词
      * 可指定其他分词算法
@@ -65,67 +71,73 @@ public class WordSegmenter {
      * @param segmentationAlgorithm 分词算法
      * @return 分词结果
      */
-    public static List<Word> seg(String text, SegmentationAlgorithm segmentationAlgorithm){        
+    public static List<Word> seg(String text, SegmentationAlgorithm segmentationAlgorithm) {
         List<Word> words = SegmentationFactory.getSegmentation(segmentationAlgorithm).seg(text);
         //停用词过滤
         StopWord.filterStopWords(words);
         return words;
     }
+
     /**
      * 对文本进行分词，移除停用词
      * 使用双向最大匹配算法
      * @param text 文本
      * @return 分词结果
      */
-    public static List<Word> seg(String text){
+    public static List<Word> seg(String text) {
         List<Word> words = SegmentationFactory.getSegmentation(SegmentationAlgorithm.MaxNgramScore).seg(text);
         //停用词过滤
         StopWord.filterStopWords(words);
         return words;
     }
+
     /**
      * 对文件进行分词，保留停用词
      * 可指定其他分词算法
      * @param input 输入文件
      * @param output 输出文件
      * @param segmentationAlgorithm 分词算法
-     * @throws Exception 
+     * @throws Exception
      */
-    public static void segWithStopWords(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
+    public static void segWithStopWords(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception {
         Utils.seg(input, output, false, segmentationAlgorithm);
     }
+
     /**
      * 对文件进行分词，保留停用词
      * 使用双向最大匹配算法
      * @param input 输入文件
      * @param output 输出文件
-     * @throws Exception 
+     * @throws Exception
      */
-    public static void segWithStopWords(File input, File output) throws Exception{
+    public static void segWithStopWords(File input, File output) throws Exception {
         Utils.seg(input, output, false, SegmentationAlgorithm.MaxNgramScore);
     }
+
     /**
      * 对文件进行分词，移除停用词
      * 可指定其他分词算法
      * @param input 输入文件
      * @param output 输出文件
      * @param segmentationAlgorithm 分词算法
-     * @throws Exception 
+     * @throws Exception
      */
-    public static void seg(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception{
+    public static void seg(File input, File output, SegmentationAlgorithm segmentationAlgorithm) throws Exception {
         Utils.seg(input, output, true, segmentationAlgorithm);
     }
+
     /**
      * 对文件进行分词，移除停用词
      * 使用双向最大匹配算法
      * @param input 输入文件
      * @param output 输出文件
-     * @throws Exception 
+     * @throws Exception
      */
-    public static void seg(File input, File output) throws Exception{
+    public static void seg(File input, File output) throws Exception {
         Utils.seg(input, output, true, SegmentationAlgorithm.MaxNgramScore);
     }
-    private static void demo(){
+
+    private static void demo() {
         long start = System.currentTimeMillis();
         List<String> sentences = new ArrayList<>();
         sentences.add("杨尚川是APDPlat应用级产品开发平台的作者");
@@ -165,7 +177,7 @@ public class WordSegmenter {
         sentences.add("反映了一个人的精神面貌");
         sentences.add("美国加州大学的科学家发现");
         sentences.add("我好不挺好");
-        sentences.add("木有"); 
+        sentences.add("木有");
         sentences.add("下雨天留客天天留我不留");
         sentences.add("叔叔亲了我妈妈也亲了我");
         sentences.add("白马非马");
@@ -182,69 +194,71 @@ public class WordSegmenter {
         sentences.add("中国的首都是北京");
         sentences.add("老师说明天下午休息");
         sentences.add("今天下雨");
-        int i=1;
-        for(String sentence : sentences){
+        int i = 1;
+        for (String sentence : sentences) {
             List<Word> words = segWithStopWords(sentence);
-            LOGGER.info((i++)+"、切分句子: "+sentence);
-            LOGGER.info("    切分结果："+words);
+            LOGGER.info((i++) + "、切分句子: " + sentence);
+            LOGGER.info("    切分结果：" + words);
         }
         long cost = System.currentTimeMillis() - start;
-        LOGGER.info("耗时: "+cost+" 毫秒");
+        LOGGER.info("耗时: " + cost + " 毫秒");
     }
+
     public static void processCommand(String... args) {
-        if(args == null || args.length < 1){
+        if (args == null || args.length < 1) {
             LOGGER.info("命令不正确");
             return;
         }
-        try{
-            switch(args[0].trim().charAt(0)){
+        try {
+            switch (args[0].trim().charAt(0)) {
                 case 'd':
                     demo();
                     break;
                 case 't':
-                    if(args.length < 2){
+                    if (args.length < 2) {
                         showUsage();
-                    }else{
+                    } else {
                         StringBuilder str = new StringBuilder();
-                        for(int i=1; i<args.length; i++){
+                        for (int i = 1; i < args.length; i++) {
                             str.append(args[i]).append(" ");
                         }
                         List<Word> words = segWithStopWords(str.toString());
-                        LOGGER.info("切分句子："+str.toString());
-                        LOGGER.info("切分结果："+words.toString());
+                        LOGGER.info("切分句子：" + str.toString());
+                        LOGGER.info("切分结果：" + words.toString());
                     }
                     break;
                 case 'f':
-                    if(args.length != 3){
+                    if (args.length != 3) {
                         showUsage();
-                    }else{
+                    } else {
                         segWithStopWords(new File(args[1]), new File(args[2]));
                     }
                     break;
                 default:
                     StringBuilder str = new StringBuilder();
-                    for(String a : args){
+                    for (String a : args) {
                         str.append(a).append(" ");
                     }
                     List<Word> words = segWithStopWords(str.toString());
-                    LOGGER.info("切分句子："+str.toString());
-                    LOGGER.info("切分结果："+words.toString());
+                    LOGGER.info("切分句子：" + str.toString());
+                    LOGGER.info("切分结果：" + words.toString());
                     break;
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             showUsage();
         }
     }
+
     private static void run(String encoding) {
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, encoding))){
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, encoding))) {
             String line = null;
-            while((line = reader.readLine()) != null){
-                if("exit".equals(line)){
+            while ((line = reader.readLine()) != null) {
+                if ("exit".equals(line)) {
                     System.exit(0);
                     LOGGER.info("退出");
                     return;
                 }
-                if(line.trim().equals("")){
+                if (line.trim().equals("")) {
                     continue;
                 }
                 processCommand(line.split(" "));
@@ -254,7 +268,8 @@ public class WordSegmenter {
             LOGGER.error("程序中断：", ex);
         }
     }
-    private static void showUsage(){
+
+    private static void showUsage() {
         LOGGER.info("");
         LOGGER.info("********************************************");
         LOGGER.info("用法: command [text] [input] [output]");
@@ -267,15 +282,16 @@ public class WordSegmenter {
         LOGGER.info("********************************************");
         LOGGER.info("输入命令后回车确认：");
     }
+
     public static void main(String[] args) {
         String encoding = "utf-8";
-        if(args==null || args.length == 0){
+        if (args == null || args.length == 0) {
             showUsage();
             run(encoding);
-        }else if(Charset.isSupported(args[0])){
+        } else if (Charset.isSupported(args[0])) {
             showUsage();
             run(args[0]);
-        }else{
+        } else {
             processCommand(args);
             //非交互模式，退出JVM
             System.exit(0);

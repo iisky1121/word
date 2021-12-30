@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.analysis;
@@ -58,8 +56,8 @@ public class SimpleTextSimilarity extends TextSimilarity {
         words1.parallelStream().forEach(word -> {
             intersectionLength.addAndGet(word.getText().length());
         });
-        double score = intersectionLength.get()/(double)Math.max(words1Length.get(), words2Length.get());
-        if(LOGGER.isDebugEnabled()) {
+        double score = intersectionLength.get() / (double) Math.max(words1Length.get(), words2Length.get());
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("词列表1总的字符数：" + words1Length.get());
             LOGGER.debug("词列表2总的字符数：" + words2Length.get());
             LOGGER.debug("词列表1和2共有的词的总的字符数：" + intersectionLength.get());
@@ -79,11 +77,11 @@ public class SimpleTextSimilarity extends TextSimilarity {
         double score2pk2 = textSimilarity.similarScore(text2, text2);
         double score2pk3 = textSimilarity.similarScore(text2, text3);
         double score3pk3 = textSimilarity.similarScore(text3, text3);
-        System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
-        System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
-        System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
-        System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
-        System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
-        System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
+        System.out.println(text1 + " 和 " + text1 + " 的相似度分值：" + score1pk1);
+        System.out.println(text1 + " 和 " + text2 + " 的相似度分值：" + score1pk2);
+        System.out.println(text1 + " 和 " + text3 + " 的相似度分值：" + score1pk3);
+        System.out.println(text2 + " 和 " + text2 + " 的相似度分值：" + score2pk2);
+        System.out.println(text2 + " 和 " + text3 + " 的相似度分值：" + score2pk3);
+        System.out.println(text3 + " 和 " + text3 + " 的相似度分值：" + score3pk3);
     }
 }

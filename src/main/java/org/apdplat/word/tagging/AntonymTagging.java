@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.tagging;
@@ -34,17 +32,21 @@ import java.util.*;
 
 /**
  * 反义标注
+ *
  * @author 杨尚川
  */
 public class AntonymTagging {
-    private AntonymTagging(){}
+    private AntonymTagging() {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AntonymTagging.class);
     private static final GenericTrie<String[]> GENERIC_TRIE = new GenericTrie<>();
-    static{
+
+    static {
         reload();
     }
-    public static void reload(){
+
+    public static void reload() {
         AutoDetector.loadAndWatch(new ResourceLoader() {
 
             @Override
@@ -116,7 +118,7 @@ public class AntonymTagging {
             private void addAntonym(String word, String... words) {
                 String[] exist = GENERIC_TRIE.get(word);
                 if (exist != null) {
-                    if(LOGGER.isDebugEnabled()) {
+                    if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug(word + " 已经有存在的反义词：");
                         for (String e : exist) {
                             LOGGER.debug("\t" + e);
@@ -126,7 +128,7 @@ public class AntonymTagging {
                     set.addAll(Arrays.asList(exist));
                     set.addAll(Arrays.asList(words));
                     String[] merge = set.toArray(new String[0]);
-                    if(LOGGER.isDebugEnabled()) {
+                    if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("合并新的反义词：");
                         for (String e : words) {
                             LOGGER.debug("\t" + e);
@@ -143,27 +145,30 @@ public class AntonymTagging {
             }
         }, WordConfTools.get("word.antonym.path", "classpath:word_antonym.txt"));
     }
-    public static void process(List<Word> words){
-        if(LOGGER.isDebugEnabled()) {
+
+    public static void process(List<Word> words) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("对分词结果进行反义标注之前：{}", words);
         }
         //反义标注
         words.stream().forEach(word -> process(word));
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("对分词结果进行反义标注之后：{}", words);
         }
     }
-    private static void process(Word word){
+
+    private static void process(Word word) {
         String[] antonym = GENERIC_TRIE.get(word.getText());
-        if(antonym!=null && antonym.length>1){
+        if (antonym != null && antonym.length > 1) {
             //有反义词
             List<Word> antonymList = toWord(antonym);
             word.setAntonym(antonymList);
         }
     }
-    private static List<Word> toWord(String[] words){
+
+    private static List<Word> toWord(String[] words) {
         List<Word> result = new ArrayList<>(words.length);
-        for (String word : words){
+        for (String word : words) {
             result.add(new Word(word));
         }
         return result;

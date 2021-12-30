@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.lucene;
@@ -54,43 +52,45 @@ import static org.junit.Assert.fail;
 public class ChineseWordAnalyzerTest {
     @Test
     public void test1() {
-        try{
+        try {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "杨尚川是APDPlat应用级产品开发平台的作者");
             List<String> words = new ArrayList<>();
             tokenStream.reset();
-            while(tokenStream.incrementToken()){
+            while (tokenStream.incrementToken()) {
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
             tokenStream.close();
             String expResult = "[杨尚川, 是, apdplat, 应用级, 产品, 开发, 平台, 的, 作者]";
-            if("bigram".equals(WordConfTools.get("ngram", "bigram"))){
+            if ("bigram".equals(WordConfTools.get("ngram", "bigram"))) {
                 expResult = "[杨尚川, 是, apdplat, 应用, 级, 产品, 开发, 平台, 的, 作者]";
             }
             assertEquals(expResult, words.toString());
-        }catch(IOException e){
-            fail("分词出错"+e.getMessage());
+        } catch (IOException e) {
+            fail("分词出错" + e.getMessage());
         }
     }
+
     @Test
     public void test2() {
-        try{
+        try {
             Analyzer analyzer = new ChineseWordAnalyzer();
             TokenStream tokenStream = analyzer.tokenStream("text", "叔叔亲了我妈妈也亲了我");
             List<String> words = new ArrayList<>();
             tokenStream.reset();
-            while(tokenStream.incrementToken()){
+            while (tokenStream.incrementToken()) {
                 CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
                 words.add(charTermAttribute.toString());
             }
             tokenStream.close();
             String expResult = "[叔叔, 亲了, 我, 妈妈, 也, 亲了, 我]";
             assertEquals(expResult, words.toString());
-        }catch(IOException e){
-            fail("分词出错"+e.getMessage());
+        } catch (IOException e) {
+            fail("分词出错" + e.getMessage());
         }
     }
+
     @Test
     public void test3() {
         Analyzer analyzer = new ChineseWordAnalyzer();
@@ -142,34 +142,34 @@ public class ChineseWordAnalyzerTest {
         File index = new File("target/indexes");
         Utils.deleteDir(index);
         try (Directory directory = new SimpleFSDirectory(index.toPath());
-                IndexWriter indexWriter = new IndexWriter(directory, config)) {
-            for(String sentence : sentences){
+             IndexWriter indexWriter = new IndexWriter(directory, config)) {
+            for (String sentence : sentences) {
                 Document doc = new Document();
                 Field field = new TextField("text", sentence, Field.Store.YES);
                 doc.add(field);
                 indexWriter.addDocument(doc);
             }
-            indexWriter.commit();            
-        } catch(Exception e){
+            indexWriter.commit();
+        } catch (Exception e) {
             e.printStackTrace();
-            fail("索引失败"+e.getMessage());
+            fail("索引失败" + e.getMessage());
         }
         try (Directory directory = new SimpleFSDirectory(index.toPath());
-                DirectoryReader directoryReader = DirectoryReader.open(directory)) {
-                IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
-                QueryParser queryParser = new QueryParser("text", analyzer);
-                Query query = queryParser.parse("text:杨尚川");
-                TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
-                assertEquals(2, docs.totalHits);
-                assertEquals("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
-                assertEquals("杨尚川是APDPlat应用级产品开发平台的作者", indexSearcher.doc(docs.scoreDocs[1].doc).get("text"));
-                
-                query = queryParser.parse("text:生命");
-                docs = indexSearcher.search(query, Integer.MAX_VALUE);
-                assertEquals(1, docs.totalHits);
-                assertEquals("研究生命的起源", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
-        } catch(Exception e){
-            fail("搜索失败"+e.getMessage());
+             DirectoryReader directoryReader = DirectoryReader.open(directory)) {
+            IndexSearcher indexSearcher = new IndexSearcher(directoryReader);
+            QueryParser queryParser = new QueryParser("text", analyzer);
+            Query query = queryParser.parse("text:杨尚川");
+            TopDocs docs = indexSearcher.search(query, Integer.MAX_VALUE);
+            assertEquals(2, docs.totalHits);
+            assertEquals("word是一个中文分词项目，作者是杨尚川，杨尚川的英文名叫ysc", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
+            assertEquals("杨尚川是APDPlat应用级产品开发平台的作者", indexSearcher.doc(docs.scoreDocs[1].doc).get("text"));
+
+            query = queryParser.parse("text:生命");
+            docs = indexSearcher.search(query, Integer.MAX_VALUE);
+            assertEquals(1, docs.totalHits);
+            assertEquals("研究生命的起源", indexSearcher.doc(docs.scoreDocs[0].doc).get("text"));
+        } catch (Exception e) {
+            fail("搜索失败" + e.getMessage());
         }
     }
 }

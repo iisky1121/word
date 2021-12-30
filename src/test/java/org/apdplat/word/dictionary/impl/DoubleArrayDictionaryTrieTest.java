@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.dictionary.impl;
@@ -40,33 +38,36 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
     @Test
     public void testAdd() {
         Dictionary dictionary = new DoubleArrayDictionaryTrie();
-        try{
+        try {
             dictionary.add("APDPlat");
             fail();
-        }catch (Exception e){
+        } catch (Exception e) {
             assertEquals("not yet support, please use addAll method!", e.getMessage());
         }
     }
+
     @Test
     public void testRemove() {
         Dictionary dictionary = new DoubleArrayDictionaryTrie();
-        try{
+        try {
             dictionary.remove("APDPlat");
             fail();
-        }catch (Exception e){
+        } catch (Exception e) {
             assertEquals("not yet support menthod!", e.getMessage());
         }
     }
+
     @Test
     public void testRemoveAll() {
         Dictionary dictionary = new DoubleArrayDictionaryTrie();
-        try{
+        try {
             dictionary.removeAll(Arrays.asList("APDPlat", "杨尚川"));
             fail();
-        }catch (Exception e){
+        } catch (Exception e) {
             assertEquals("not yet support menthod!", e.getMessage());
         }
     }
+
     @Test
     public void testAddAll() {
         Dictionary dictionary = new DoubleArrayDictionaryTrie();
@@ -89,10 +90,10 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
         assertEquals(false, dictionary.contains("白掌"));
         assertEquals(false, dictionary.contains("红掌"));
 
-        try{
+        try {
             dictionary.addAll(Arrays.asList("天空", "热爱", "白天"));
             fail();
-        }catch (Exception e){
+        } catch (Exception e) {
             assertEquals("addAll method can just be used once after clear method!", e.getMessage());
         }
         dictionary.clear();
@@ -178,8 +179,9 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
         assertEquals(true, dictionary.contains("红掌"));
         assertEquals(false, dictionary.contains("金钱树"));
     }
+
     @Test
-    public void testWhole2(){
+    public void testWhole2() {
         try {
             AtomicInteger h = new AtomicInteger();
             AtomicInteger e = new AtomicInteger();
@@ -200,7 +202,7 @@ public class DoubleArrayDictionaryTrieTest extends TestCase {
             });
             assertEquals(2599239, e.get());
             assertEquals(1211555, h.get());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
         }

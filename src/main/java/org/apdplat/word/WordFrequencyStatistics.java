@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word;
@@ -53,13 +51,15 @@ public class WordFrequencyStatistics {
      * 不指定算法则默认使用：最大Ngram分值算法
      * 不指定词频统计结果保存路径默认使用当前路径下的：WordFrequencyStatistics-Result.txt
      */
-    public WordFrequencyStatistics(){}
+    public WordFrequencyStatistics() {
+    }
+
     /**
      * 构造函数
      * 不指定算法则默认使用：最大Ngram分值算法
      * @param resultPath 词频统计结果保存路径
      */
-    public WordFrequencyStatistics(String resultPath){
+    public WordFrequencyStatistics(String resultPath) {
         this.resultPath = resultPath;
     }
 
@@ -68,7 +68,7 @@ public class WordFrequencyStatistics {
      * @param resultPath 词频统计结果保存路径
      * @param segmentationAlgorithm 分词算法
      */
-    public WordFrequencyStatistics(String resultPath, SegmentationAlgorithm segmentationAlgorithm){
+    public WordFrequencyStatistics(String resultPath, SegmentationAlgorithm segmentationAlgorithm) {
         this.resultPath = resultPath;
         this.segmentation = SegmentationFactory.getSegmentation(segmentationAlgorithm);
     }
@@ -78,7 +78,7 @@ public class WordFrequencyStatistics {
      * @param resultPath 词频统计结果保存路径
      * @param segmentationAlgorithm 分词算法，要符合 org.apdplat.word.segmentation.SegmentationAlgorithm 中的定义
      */
-    public WordFrequencyStatistics(String resultPath, String segmentationAlgorithm){
+    public WordFrequencyStatistics(String resultPath, String segmentationAlgorithm) {
         this.resultPath = resultPath;
         this.segmentation = SegmentationFactory.getSegmentation(SegmentationAlgorithm.valueOf(segmentationAlgorithm));
     }
@@ -135,10 +135,10 @@ public class WordFrequencyStatistics {
      * 对文本进行分词
      * @param text 文本
      */
-    public void seg(String text){
+    public void seg(String text) {
         segmentation.seg(text).parallelStream().forEach(word -> {
             //停用词过滤
-            if(isRemoveStopWord() && StopWord.is(word.getText())){
+            if (isRemoveStopWord() && StopWord.is(word.getText())) {
                 return;
             }
             statistics(word, 1, statisticsMap);
@@ -151,7 +151,7 @@ public class WordFrequencyStatistics {
      * @param output 分词结果保存的文本文件
      * @throws Exception
      */
-    public void seg(File input, File output) throws Exception{
+    public void seg(File input, File output) throws Exception {
         Utils.seg(input, output, isRemoveStopWord(), segmentation.getSegmentationAlgorithm(), word -> statistics(word, 1, statisticsMap));
     }
 
@@ -161,7 +161,7 @@ public class WordFrequencyStatistics {
      * @param times 词频
      * @param container 内存中保存词频的数据结构
      */
-    private void statistics(String word, int times, Map<String, AtomicInteger> container){
+    private void statistics(String word, int times, Map<String, AtomicInteger> container) {
         container.putIfAbsent(word, new AtomicInteger());
         container.get(word).addAndGet(times);
     }
@@ -172,7 +172,7 @@ public class WordFrequencyStatistics {
      * @param times 词频
      * @param container 内存中保存词频的数据结构
      */
-    private void statistics(Word word, int times, Map<String, AtomicInteger> container){
+    private void statistics(Word word, int times, Map<String, AtomicInteger> container) {
         statistics(word.getText(), times, container);
     }
 
@@ -180,7 +180,7 @@ public class WordFrequencyStatistics {
      * 将词频统计结果保存到文件
      * @param resultPath 词频统计结果保存路径
      */
-    public void dump(String resultPath){
+    public void dump(String resultPath) {
         this.resultPath = resultPath;
         dump();
     }
@@ -188,7 +188,7 @@ public class WordFrequencyStatistics {
     /**
      * 将词频统计结果保存到文件
      */
-    public void dump(){
+    public void dump() {
         dump(this.statisticsMap, this.resultPath);
     }
 
@@ -197,18 +197,18 @@ public class WordFrequencyStatistics {
      * @param map 内存中的词频统计结果
      * @param path 词频统计结果文件保存路径
      */
-    private void dump(Map<String, AtomicInteger> map, String path){
-        try{
+    private void dump(Map<String, AtomicInteger> map, String path) {
+        try {
             //按分值排序
-            List<String> list = map.entrySet().parallelStream().sorted((a,b)->new Integer(b.getValue().get()).compareTo(a.getValue().intValue())).map(entry->entry.getKey()+" "+entry.getValue().get()).collect(Collectors.toList());
+            List<String> list = map.entrySet().parallelStream().sorted((a, b) -> new Integer(b.getValue().get()).compareTo(a.getValue().intValue())).map(entry -> entry.getKey() + " " + entry.getValue().get()).collect(Collectors.toList());
             Files.write(Paths.get(path), list);
-            if(list.size() < 100){
+            if (list.size() < 100) {
                 LOGGER.info("词频统计结果：");
                 AtomicInteger i = new AtomicInteger();
-                list.forEach(item->LOGGER.info("\t"+i.incrementAndGet()+"、"+item));
+                list.forEach(item -> LOGGER.info("\t" + i.incrementAndGet() + "、" + item));
             }
-            LOGGER.info("词频统计结果成功保存到文件："+path);
-        }catch (Exception e){
+            LOGGER.info("词频统计结果成功保存到文件：" + path);
+        } catch (Exception e) {
             LOGGER.error("dump error!", e);
         }
     }
@@ -218,10 +218,10 @@ public class WordFrequencyStatistics {
      * @param mergeResultPath 合并结果文件路径
      * @param resultPaths 多个词频统计结果文件路径
      */
-    public void merge(String mergeResultPath, String... resultPaths){
-        try{
+    public void merge(String mergeResultPath, String... resultPaths) {
+        try {
             Map<String, AtomicInteger> map = new ConcurrentHashMap<>();
-            for(String resultPath : resultPaths) {
+            for (String resultPath : resultPaths) {
                 Files.lines(Paths.get(resultPath)).forEach(line -> {
                     String[] attrs = line.split("\\s+");
                     if (attrs != null && attrs.length == 2) {
@@ -230,7 +230,7 @@ public class WordFrequencyStatistics {
                 });
             }
             dump(map, mergeResultPath);
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("merge error!", e);
         }
     }
@@ -238,31 +238,31 @@ public class WordFrequencyStatistics {
     /**
      * 清除之前的统计结果
      */
-    public void reset(){
+    public void reset() {
         this.statisticsMap.clear();
     }
 
-    public static void main(String[] args) throws Exception{
-        if(args.length > 0){
+    public static void main(String[] args) throws Exception {
+        if (args.length > 0) {
             //词频统计设置
             WordFrequencyStatistics wordFrequencyStatistics = new WordFrequencyStatistics();
             Set<String> textFiles = new HashSet<>();
-            for(String arg : args) {
-                if(arg.equals("-removeStopWord")){
+            for (String arg : args) {
+                if (arg.equals("-removeStopWord")) {
                     wordFrequencyStatistics.setRemoveStopWord(true);
                 }
-                if(arg.startsWith("-textFile=")){
+                if (arg.startsWith("-textFile=")) {
                     textFiles.add(arg.replace("-textFile=", ""));
                 }
-                if(arg.startsWith("-statisticsResultFile=")){
+                if (arg.startsWith("-statisticsResultFile=")) {
                     wordFrequencyStatistics.setResultPath(arg.replace("-statisticsResultFile=", ""));
                 }
-                if(arg.startsWith("-segmentationAlgorithm=")){
+                if (arg.startsWith("-segmentationAlgorithm=")) {
                     wordFrequencyStatistics.setSegmentationAlgorithm(SegmentationAlgorithm.valueOf(arg.replace("-segmentationAlgorithm=", "")));
                 }
             }
-            for (String textFile : textFiles){
-                wordFrequencyStatistics.seg(new File(textFile), (new File(textFile+".seg.txt")));
+            for (String textFile : textFiles) {
+                wordFrequencyStatistics.seg(new File(textFile), (new File(textFile + ".seg.txt")));
             }
             wordFrequencyStatistics.dump();
             return;

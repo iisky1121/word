@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.analysis;
@@ -63,36 +61,36 @@ public class EuclideanDistanceTextSimilarity extends TextSimilarity {
         AtomicFloat ab = new AtomicFloat();
         //计算
         words
-            .parallelStream()
-            .forEach(word -> {
-                Float x1 = weights1.get(word.getText());
-                Float x2 = weights2.get(word.getText());
-                if (x1 == null) {
-                    x1 = 0f;
-                }
-                if (x2 == null) {
-                    x2 = 0f;
-                }
-                //(x1-x2)
-                float oneOfTheDimension = x1 - x2;
-                //(x1-x2)^2
-                //+
-                ab.addAndGet(oneOfTheDimension * oneOfTheDimension);
-            });
+                .parallelStream()
+                .forEach(word -> {
+                    Float x1 = weights1.get(word.getText());
+                    Float x2 = weights2.get(word.getText());
+                    if (x1 == null) {
+                        x1 = 0f;
+                    }
+                    if (x2 == null) {
+                        x2 = 0f;
+                    }
+                    //(x1-x2)
+                    float oneOfTheDimension = x1 - x2;
+                    //(x1-x2)^2
+                    //+
+                    ab.addAndGet(oneOfTheDimension * oneOfTheDimension);
+                });
         //distance=sqrt((x1-x2)^2+(y1-y2)^2)
         double euclideanDistance = Math.sqrt(ab.get());
         double score = 0;
-        if(euclideanDistance == 0){
+        if (euclideanDistance == 0) {
             //距离为0，表示完全相同
             score = 1.0;
-        }else {
+        } else {
             //使用BigDecimal保证精确计算浮点数
             //score = 1 / (euclideanDistance+1);
-            score = BigDecimal.valueOf(1).divide(BigDecimal.valueOf(euclideanDistance+1), 9, BigDecimal.ROUND_HALF_UP).doubleValue();
+            score = BigDecimal.valueOf(1).divide(BigDecimal.valueOf(euclideanDistance + 1), 9, BigDecimal.ROUND_HALF_UP).doubleValue();
         }
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("文本1和文本2的欧几里得距离："+euclideanDistance);
-            LOGGER.debug("文本1和文本2的相似度分值：1 / ("+euclideanDistance+"+1)="+score);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("文本1和文本2的欧几里得距离：" + euclideanDistance);
+            LOGGER.debug("文本1和文本2的相似度分值：1 / (" + euclideanDistance + "+1)=" + score);
         }
         return score;
     }
@@ -108,11 +106,11 @@ public class EuclideanDistanceTextSimilarity extends TextSimilarity {
         double score2pk2 = textSimilarity.similarScore(text2, text2);
         double score2pk3 = textSimilarity.similarScore(text2, text3);
         double score3pk3 = textSimilarity.similarScore(text3, text3);
-        System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
-        System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
-        System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
-        System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
-        System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
-        System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
+        System.out.println(text1 + " 和 " + text1 + " 的相似度分值：" + score1pk1);
+        System.out.println(text1 + " 和 " + text2 + " 的相似度分值：" + score1pk2);
+        System.out.println(text1 + " 和 " + text3 + " 的相似度分值：" + score1pk3);
+        System.out.println(text2 + " 和 " + text2 + " 的相似度分值：" + score2pk2);
+        System.out.println(text2 + " 和 " + text3 + " 的相似度分值：" + score2pk3);
+        System.out.println(text3 + " 和 " + text3 + " 的相似度分值：" + score3pk3);
     }
 }

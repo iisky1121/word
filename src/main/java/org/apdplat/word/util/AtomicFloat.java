@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.util;
@@ -39,41 +37,41 @@ public class AtomicFloat extends Number {
         bits = new AtomicInteger(Float.floatToIntBits(initialValue));
     }
 
-    public final float addAndGet(float delta){
+    public final float addAndGet(float delta) {
         float expect;
         float update;
         do {
             expect = get();
             update = expect + delta;
-        } while(!this.compareAndSet(expect, update));
+        } while (!this.compareAndSet(expect, update));
 
         return update;
     }
 
-    public final float getAndAdd(float delta){
+    public final float getAndAdd(float delta) {
         float expect;
         float update;
         do {
             expect = get();
             update = expect + delta;
-        } while(!this.compareAndSet(expect, update));
+        } while (!this.compareAndSet(expect, update));
 
         return expect;
     }
 
-    public final float getAndDecrement(){
+    public final float getAndDecrement() {
         return getAndAdd(-1);
     }
 
-    public final float decrementAndGet(){
+    public final float decrementAndGet() {
         return addAndGet(-1);
     }
 
-    public final float getAndIncrement(){
+    public final float getAndIncrement() {
         return getAndAdd(1);
     }
 
-    public final float incrementAndGet(){
+    public final float incrementAndGet() {
         return addAndGet(1);
     }
 
@@ -81,7 +79,7 @@ public class AtomicFloat extends Number {
         float expect;
         do {
             expect = get();
-        } while(!this.compareAndSet(expect, newValue));
+        } while (!this.compareAndSet(expect, newValue));
 
         return expect;
     }

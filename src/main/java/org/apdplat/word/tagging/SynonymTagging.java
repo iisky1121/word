@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.tagging;
@@ -38,14 +36,17 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * @author 杨尚川
  */
 public class SynonymTagging {
-    private SynonymTagging(){}
+    private SynonymTagging() {
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SynonymTagging.class);
     private static final GenericTrie<String[]> GENERIC_TRIE = new GenericTrie<>();
-    static{
+
+    static {
         reload();
     }
-    public static void reload(){
+
+    public static void reload() {
         AutoDetector.loadAndWatch(new ResourceLoader() {
 
             @Override
@@ -107,7 +108,7 @@ public class SynonymTagging {
                 for (String word : words) {
                     String[] exist = GENERIC_TRIE.get(word);
                     if (exist != null) {
-                        if(LOGGER.isDebugEnabled()) {
+                        if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug(word + " 已经有存在的同义词：");
                             for (String e : exist) {
                                 LOGGER.debug("\t" + e);
@@ -117,7 +118,7 @@ public class SynonymTagging {
                         set.addAll(Arrays.asList(exist));
                         set.addAll(Arrays.asList(words));
                         String[] merge = set.toArray(new String[0]);
-                        if(LOGGER.isDebugEnabled()) {
+                        if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("合并新的同义词：");
                             for (String e : words) {
                                 LOGGER.debug("\t" + e);
@@ -135,57 +136,62 @@ public class SynonymTagging {
             }
         }, WordConfTools.get("word.synonym.path", "classpath:word_synonym.txt"));
     }
-    public static void process(List<Word> words){
+
+    public static void process(List<Word> words) {
         process(words, true);
     }
-    public static void process(List<Word> words, boolean direct){
-        if(LOGGER.isDebugEnabled()) {
+
+    public static void process(List<Word> words, boolean direct) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("对分词结果进行同义标注之前：{}", words);
         }
         //同义标注
-        for(Word word : words){
-            if(direct){
-                if(LOGGER.isDebugEnabled()) {
+        for (Word word : words) {
+            if (direct) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("直接模式");
                 }
                 processDirectSynonym(word);
-            }else{
-                if(LOGGER.isDebugEnabled()) {
+            } else {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("间接接模式");
                 }
                 processIndirectSynonym(word);
             }
         }
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("对分词结果进行同义标注之后：{}", words);
         }
     }
-    private static void processDirectSynonym(Word word){
+
+    private static void processDirectSynonym(Word word) {
         String[] synonym = GENERIC_TRIE.get(word.getText());
-        if(synonym!=null && synonym.length>1){
+        if (synonym != null && synonym.length > 1) {
             //有同义词
             List<Word> synonymList = toWord(synonym);
             synonymList.remove(word);
             word.setSynonym(synonymList);
         }
     }
-    private static void processIndirectSynonym(Word word){
+
+    private static void processIndirectSynonym(Word word) {
         Set<Word> synonymList = new ConcurrentSkipListSet<>();
         indirectSynonym(word, synonymList);
-        if(!synonymList.isEmpty()){
+        if (!synonymList.isEmpty()) {
             synonymList.remove(word);
             word.setSynonym(new ArrayList<>(synonymList));
         }
     }
-    private static void indirectSynonym(Word word, Set<Word> allSynonym){
+
+    private static void indirectSynonym(Word word, Set<Word> allSynonym) {
         String[] synonym = GENERIC_TRIE.get(word.getText());
-        if(synonym!=null && synonym.length>1){
+        if (synonym != null && synonym.length > 1) {
             int len = allSynonym.size();
             //有同义词
             List<Word> synonymList = toWord(synonym);
             allSynonym.addAll(synonymList);
             //有新的同义词进入，就要接着检查是否有间接同义词
-            if(allSynonym.size()>len) {
+            if (allSynonym.size() > len) {
                 //间接关系的同义词，A和B是同义词，A和C是同义词，B和D是同义词，C和E是同义词
                 //则A B C D E都是一组同义词
                 for (Word item : allSynonym) {
@@ -194,9 +200,10 @@ public class SynonymTagging {
             }
         }
     }
-    private static List<Word> toWord(String[] words){
+
+    private static List<Word> toWord(String[] words) {
         List<Word> result = new ArrayList<>(words.length);
-        for (String word : words){
+        for (String word : words) {
             result.add(new Word(word));
         }
         return result;

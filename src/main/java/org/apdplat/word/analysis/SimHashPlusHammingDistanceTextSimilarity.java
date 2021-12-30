@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.analysis;
@@ -51,7 +49,8 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
 
     private int hashBitCount = 128;
 
-    public SimHashPlusHammingDistanceTextSimilarity(){}
+    public SimHashPlusHammingDistanceTextSimilarity() {
+    }
 
     public SimHashPlusHammingDistanceTextSimilarity(int hashBitCount) {
         this.hashBitCount = hashBitCount;
@@ -72,7 +71,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(List<Word> words1, List<Word> words2){
+    protected double scoreImpl(List<Word> words1, List<Word> words2) {
         //用词频来标注词的权重
         taggingWeightWithWordFrequency(words1, words2);
         //计算SimHash
@@ -80,7 +79,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         String simHash2 = simHash(words2);
         //计算SimHash值之间的汉明距离
         int hammingDistance = hammingDistance(simHash1, simHash2);
-        if(hammingDistance == -1){
+        if (hammingDistance == -1) {
             LOGGER.error("文本1：" + words1.toString());
             LOGGER.error("文本2：" + words2.toString());
             LOGGER.error("文本1SimHash值：" + simHash1);
@@ -89,15 +88,15 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
             return 0.0;
         }
         int maxDistance = simHash1.length();
-        double score = (1 - hammingDistance / (double)maxDistance);
-        if(LOGGER.isDebugEnabled()){
+        double score = (1 - hammingDistance / (double) maxDistance);
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("文本1：" + words1.toString());
             LOGGER.debug("文本2：" + words2.toString());
-            LOGGER.debug("文本1SimHash值："+simHash1);
-            LOGGER.debug("文本2SimHash值："+simHash2);
-            LOGGER.debug("hashBitCount："+hashBitCount);
-            LOGGER.debug("SimHash值之间的汉明距离："+hammingDistance);
-            LOGGER.debug("文本1和文本2的相似度分值：1 - "+hammingDistance+" / (double)"+maxDistance+"="+score);
+            LOGGER.debug("文本1SimHash值：" + simHash1);
+            LOGGER.debug("文本2SimHash值：" + simHash2);
+            LOGGER.debug("hashBitCount：" + hashBitCount);
+            LOGGER.debug("SimHash值之间的汉明距离：" + hammingDistance);
+            LOGGER.debug("文本1和文本2的相似度分值：1 - " + hammingDistance + " / (double)" + maxDistance + "=" + score);
         }
         return score;
     }
@@ -110,7 +109,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
     private String simHash(List<Word> words) {
         float[] hashBit = new float[hashBitCount];
         words.forEach(word -> {
-            float weight = word.getWeight()==null?1:word.getWeight();
+            float weight = word.getWeight() == null ? 1 : word.getWeight();
             BigInteger hash = hash(word.getText());
             for (int i = 0; i < hashBitCount; i++) {
                 BigInteger bitMask = new BigInteger("1").shiftLeft(i);
@@ -125,7 +124,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         for (int i = 0; i < hashBitCount; i++) {
             if (hashBit[i] >= 0) {
                 fingerprint.append("1");
-            }else{
+            } else {
                 fingerprint.append("0");
             }
         }
@@ -178,7 +177,7 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         return distance;
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         String text1 = "我爱购物";
         String text2 = "我爱读书";
         String text3 = "他是黑客";
@@ -189,11 +188,11 @@ public class SimHashPlusHammingDistanceTextSimilarity extends TextSimilarity {
         double score2pk2 = textSimilarity.similarScore(text2, text2);
         double score2pk3 = textSimilarity.similarScore(text2, text3);
         double score3pk3 = textSimilarity.similarScore(text3, text3);
-        System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
-        System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
-        System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
-        System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
-        System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
-        System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
+        System.out.println(text1 + " 和 " + text1 + " 的相似度分值：" + score1pk1);
+        System.out.println(text1 + " 和 " + text2 + " 的相似度分值：" + score1pk2);
+        System.out.println(text1 + " 和 " + text3 + " 的相似度分值：" + score1pk3);
+        System.out.println(text2 + " 和 " + text2 + " 的相似度分值：" + score2pk2);
+        System.out.println(text2 + " 和 " + text3 + " 的相似度分值：" + score2pk3);
+        System.out.println(text3 + " 和 " + text3 + " 的相似度分值：" + score3pk3);
     }
 }

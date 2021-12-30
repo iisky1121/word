@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.segmentation.impl;
@@ -38,12 +36,13 @@ import java.util.*;
  * 最后选择第一个结果
  * @author 杨尚川
  */
-public class MinimalWordCount extends AbstractSegmentation{
+public class MinimalWordCount extends AbstractSegmentation {
 
     @Override
     public SegmentationAlgorithm getSegmentationAlgorithm() {
         return SegmentationAlgorithm.MinimalWordCount;
     }
+
     @Override
     public List<Word> segImpl(String text) {
         //文本长度
@@ -54,20 +53,20 @@ public class MinimalWordCount extends AbstractSegmentation{
         //求最短路径也就是求最少词数
         start.score = 1F;
         //结束虚拟节点
-        Node end = new Node("END", textLen+1);
+        Node end = new Node("END", textLen + 1);
         //以文本中每一个字的位置（从1开始）作为二维数组的横坐标
         //以每一个字开始所能切分出来的所有的词的顺序作为纵坐标（从0开始）
-        Node[][] dag = new Node[textLen+2][0];
-        dag[0] = new Node[] { start };
-        dag[textLen+1] = new Node[] { end };
-        if(isParallelSeg()){
+        Node[][] dag = new Node[textLen + 2][0];
+        dag[0] = new Node[]{start};
+        dag[textLen + 1] = new Node[]{end};
+        if (isParallelSeg()) {
             //并行化
             List<Integer> list = new ArrayList<>(textLen);
-            for(int i=0; i<textLen; i++){
+            for (int i = 0; i < textLen; i++) {
                 list.add(i);
             }
-            list.parallelStream().forEach(i->dag[i+1] = fullSeg(text, i));
-        }else {
+            list.parallelStream().forEach(i -> dag[i + 1] = fullSeg(text, i));
+        } else {
             //串行化
             for (int i = 0; i < textLen; i++) {
                 dag[i + 1] = fullSeg(text, i);
@@ -95,16 +94,16 @@ public class MinimalWordCount extends AbstractSegmentation{
      * @param node 结束虚拟节点
      * @return 分词结果
      */
-    private List<Word> toWords(Node node){
+    private List<Word> toWords(Node node) {
         Stack<String> stack = new Stack<>();
         while ((node = node.getPrevious()) != null) {
-            if(!"S".equals(node.getText())) {
+            if (!"S".equals(node.getText())) {
                 stack.push(node.getText());
             }
         }
         int len = stack.size();
         List<Word> list = new ArrayList<>(len);
-        for(int i=0; i<len; i++){
+        for (int i = 0; i < len; i++) {
             list.add(new Word(stack.pop()));
         }
         return list;
@@ -119,19 +118,19 @@ public class MinimalWordCount extends AbstractSegmentation{
     private Node[] fullSeg(final String text, final int start) {
         List<Node> result = new LinkedList<>();
         //增加单字词
-        result.add(new Node(text.substring(start, start + 1), start+1));
+        result.add(new Node(text.substring(start, start + 1), start + 1));
         //文本长度
         final int textLen = text.length();
         //剩下文本长度
         int len = textLen - start;
         //最大截取长度
         int interceptLength = getInterceptLength();
-        if(len > interceptLength){
+        if (len > interceptLength) {
             len = interceptLength;
         }
-        while(len > 1){
-            if(getDictionary().contains(text, start, len) || RecognitionTool.recog(text, start, len)){
-                result.add(new Node(text.substring(start, start + len), start+1));
+        while (len > 1) {
+            if (getDictionary().contains(text, start, len) || RecognitionTool.recog(text, start, len)) {
+                result.add(new Node(text.substring(start, start + len), start + 1));
             }
             len--;
         }
@@ -142,8 +141,8 @@ public class MinimalWordCount extends AbstractSegmentation{
      * 输出有向无环图的最佳路径
      * @param dag
      */
-    private void dumpShortestPath(Node[][] dag){
-        if(LOGGER.isDebugEnabled()) {
+    private void dumpShortestPath(Node[][] dag) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("有向无环图的最佳路径：");
             for (Node[] nodes : dag) {
                 StringBuilder line = new StringBuilder();
@@ -151,7 +150,7 @@ public class MinimalWordCount extends AbstractSegmentation{
                     line.append("【")
                             .append(node.getText())
                             .append("(").append(node.getScore()).append(")")
-                            .append("<-").append(node.getPrevious()==null?"":node.getPrevious().getText())
+                            .append("<-").append(node.getPrevious() == null ? "" : node.getPrevious().getText())
                             .append("】\t");
                 }
                 LOGGER.debug(line.toString());
@@ -163,10 +162,10 @@ public class MinimalWordCount extends AbstractSegmentation{
      * 输出有向无环图的结构
      * @param dag
      */
-    private void dumpDAG(Node[][] dag){
-        if(LOGGER.isDebugEnabled()) {
+    private void dumpDAG(Node[][] dag) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("有向无环图：");
-            for (int i=0; i<dag.length-1; i++) {
+            for (int i = 0; i < dag.length - 1; i++) {
                 Node[] nodes = dag[i];
                 StringBuilder line = new StringBuilder();
                 for (Node node : nodes) {
@@ -263,9 +262,9 @@ public class MinimalWordCount extends AbstractSegmentation{
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Segmentation segmentation = new MinimalWordCount();
-        if(args !=null && args.length > 0){
+        if (args != null && args.length > 0) {
             System.out.println(segmentation.seg(Arrays.asList(args).toString()));
             return;
         }

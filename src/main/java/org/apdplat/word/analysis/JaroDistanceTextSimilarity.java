@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.analysis;
@@ -33,6 +31,7 @@ import java.util.List;
 public class JaroDistanceTextSimilarity extends TextSimilarity {
     protected String shorterText = null;
     protected String longerText = null;
+
     /**
      * 计算相似度分值
      * @param words1 词列表1
@@ -40,7 +39,7 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
      * @return 相似度分值
      */
     @Override
-    protected double scoreImpl(List<Word> words1, List<Word> words2){
+    protected double scoreImpl(List<Word> words1, List<Word> words2) {
         //文本1
         StringBuilder text1 = new StringBuilder();
         words1.forEach(word -> text1.append(word.getText()));
@@ -50,10 +49,10 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
         //计算文本1和文本2的Jaro距离
         //Jaro距离也就是相似度分值
         double score = jaroDistance(text1.toString(), text2.toString());
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("文本1："+text1.toString());
-            LOGGER.debug("文本2："+text2.toString());
-            LOGGER.debug("文本1和文本2的相似度分值："+score);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("文本1：" + text1.toString());
+            LOGGER.debug("文本2：" + text2.toString());
+            LOGGER.debug("文本1和文本2的相似度分值：" + score);
         }
         return score;
     }
@@ -88,11 +87,12 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
         int transpositions = transpositions(m1, m2);
         //换位次数除以2
         //t is half the number of transpositions
-        int t = transpositions/2;;
+        int t = transpositions / 2;
+        ;
         //计算距离（这里的距离也就是相似度分值了）
-        double distance = ( m / (double)shorterText.length() +
-                            m / (double)longerText.length()  +
-                            (m - t) / (double)m ) / 3.0;
+        double distance = (m / (double) shorterText.length() +
+                m / (double) longerText.length() +
+                (m - t) / (double) m) / 3.0;
         return distance;
     }
 
@@ -116,7 +116,7 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
                 if (source == target.charAt(j)) {
                     found = true;
                     conjunction.append(source);
-                    target.setCharAt(j,'*');
+                    target.setCharAt(j, '*');
                 }
             }
         }
@@ -150,11 +150,11 @@ public class JaroDistanceTextSimilarity extends TextSimilarity {
         double score2pk2 = textSimilarity.similarScore(text2, text2);
         double score2pk3 = textSimilarity.similarScore(text2, text3);
         double score3pk3 = textSimilarity.similarScore(text3, text3);
-        System.out.println(text1+" 和 "+text1+" 的相似度分值："+score1pk1);
-        System.out.println(text1+" 和 "+text2+" 的相似度分值："+score1pk2);
-        System.out.println(text1+" 和 "+text3+" 的相似度分值："+score1pk3);
-        System.out.println(text2+" 和 "+text2+" 的相似度分值："+score2pk2);
-        System.out.println(text2+" 和 "+text3+" 的相似度分值："+score2pk3);
-        System.out.println(text3+" 和 "+text3+" 的相似度分值："+score3pk3);
+        System.out.println(text1 + " 和 " + text1 + " 的相似度分值：" + score1pk1);
+        System.out.println(text1 + " 和 " + text2 + " 的相似度分值：" + score1pk2);
+        System.out.println(text1 + " 和 " + text3 + " 的相似度分值：" + score1pk3);
+        System.out.println(text2 + " 和 " + text2 + " 的相似度分值：" + score2pk2);
+        System.out.println(text2 + " 和 " + text3 + " 的相似度分值：" + score2pk3);
+        System.out.println(text3 + " 和 " + text3 + " 的相似度分值：" + score3pk3);
     }
 }

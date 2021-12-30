@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.segmentation;
@@ -39,16 +37,20 @@ public class PartOfSpeech {
     private static final Logger LOGGER = LoggerFactory.getLogger(PartOfSpeech.class);
     private String pos;
     private String des;
-    public PartOfSpeech(String pos, String des){
+
+    public PartOfSpeech(String pos, String des) {
         this.pos = pos;
         this.des = des;
     }
-    private static class PartOfSpeechMap{
+
+    private static class PartOfSpeechMap {
         private static final Map<String, PartOfSpeech> POS = new HashMap<>();
-        static{
+
+        static {
             init();
         }
-        private static void init(){
+
+        private static void init() {
             AutoDetector.loadAndWatch(new ResourceLoader() {
 
                 @Override
@@ -94,24 +96,28 @@ public class PartOfSpeech {
 
             }, WordConfTools.get("part.of.speech.des.path", "classpath:part_of_speech_des.txt"));
         }
-        private static Map<String, PartOfSpeech> getPos(){
+
+        private static Map<String, PartOfSpeech> getPos() {
             return POS;
         }
     }
-    public static PartOfSpeech valueOf(String pos){
-        if(Objects.isNull(pos) || "".equals(pos.trim())){
+
+    public static PartOfSpeech valueOf(String pos) {
+        if (Objects.isNull(pos) || "".equals(pos.trim())) {
             return I;
         }
         PartOfSpeech partOfSpeech = PartOfSpeechMap.getPos().get(pos.toLowerCase());
-        if(partOfSpeech==null){
+        if (partOfSpeech == null) {
             //未知词性
             return new PartOfSpeech(pos, "");
         }
         return partOfSpeech;
     }
-    public static boolean isPos(String pos){
+
+    public static boolean isPos(String pos) {
         return PartOfSpeechMap.getPos().get(pos.toLowerCase()) != null;
     }
+
     //未知词性
     public static final PartOfSpeech I = new PartOfSpeech("i", "未知");
 
@@ -135,7 +141,7 @@ public class PartOfSpeech {
         System.out.println(PartOfSpeech.isPos("n"));
         System.out.println(PartOfSpeech.isPos("ns"));
         System.out.println(PartOfSpeech.isPos("nn"));
-        System.out.println(PartOfSpeech.I.getPos()+" "+PartOfSpeech.I.getDes());
+        System.out.println(PartOfSpeech.I.getPos() + " " + PartOfSpeech.I.getDes());
         PartOfSpeech N_ANIMAL = new PartOfSpeech("n_animal", "动物");
         System.out.println(N_ANIMAL.getPos() + " " + N_ANIMAL.getDes());
     }

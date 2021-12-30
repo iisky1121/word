@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.util;
@@ -36,11 +34,11 @@ import java.util.stream.Collectors;
  * An Implementation of Double-Array Trie: http://linux.thai.net/~thep/datrie/datrie.html
  * @author 杨尚川
  */
-public class DoubleArrayGenericTrie{
+public class DoubleArrayGenericTrie {
     private static final Logger LOGGER = LoggerFactory.getLogger(DoubleArrayGenericTrie.class);
     private int size = 65000;
 
-    public DoubleArrayGenericTrie(int size){
+    public DoubleArrayGenericTrie(int size) {
         this.size = size;
     }
 
@@ -54,21 +52,23 @@ public class DoubleArrayGenericTrie{
         @Override
         public String toString() {
             return "Node{" +
-                    "code=" + code + "["+ (char)code + "]" +
+                    "code=" + code + "[" + (char) code + "]" +
                     ", depth=" + depth +
                     ", left=" + left +
                     ", right=" + right +
                     ", value=" + value +
                     '}';
         }
-    };
+    }
+
+    ;
 
     private int[] check;
     private int[] base;
     private boolean[] used;
     private int nextCheckPos;
 
-    public DoubleArrayGenericTrie(){
+    public DoubleArrayGenericTrie() {
         LOGGER.info("初始化双数组前缀树：" + this.getClass().getName());
     }
 
@@ -92,8 +92,8 @@ public class DoubleArrayGenericTrie{
                 node.depth = parent.depth + 1;
                 node.code = cur;
                 node.left = i;
-                if(cur==0 || cur==item.charAt(item.length()-1)){
-                    if(map.get(item)!=null) {
+                if (cur == 0 || cur == item.charAt(item.length() - 1)) {
+                    if (map.get(item) != null) {
                         node.value = map.get(item);
                     }
                 }
@@ -108,8 +108,8 @@ public class DoubleArrayGenericTrie{
 
         if (!siblings.isEmpty()) {
             siblings.get(siblings.size() - 1).right = parent.right;
-            if(LOGGER.isDebugEnabled()) {
-                if (items.size()<10) {
+            if (LOGGER.isDebugEnabled()) {
+                if (items.size() < 10) {
                     LOGGER.debug("************************************************");
                     LOGGER.debug("树信息：");
                     siblings.forEach(s -> LOGGER.debug(s.toString()));
@@ -125,7 +125,8 @@ public class DoubleArrayGenericTrie{
         int index = (siblings.get(0).code > nextCheckPos) ? siblings.get(0).code : nextCheckPos;
         boolean isFirst = true;
 
-        outer: while (true) {
+        outer:
+        while (true) {
             index++;
 
             if (check[index] != 0) {
@@ -169,7 +170,8 @@ public class DoubleArrayGenericTrie{
         }
         return begin;
     }
-    private void allocate(int size){
+
+    private void allocate(int size) {
         check = null;
         base = null;
         used = null;
@@ -180,6 +182,7 @@ public class DoubleArrayGenericTrie{
         used = new boolean[size];
         base[0] = 1;
     }
+
     private void init(List<String> items, Map<String, Integer> map) {
         if (items == null || items.isEmpty()) {
             return;
@@ -198,7 +201,7 @@ public class DoubleArrayGenericTrie{
                 toDoubleArray(siblings, items, map);
                 break;
             } catch (Exception e) {
-                size += size/10;
+                size += size / 10;
                 LOGGER.error("分配空间不够，增加至： " + size);
             }
         }
@@ -206,15 +209,15 @@ public class DoubleArrayGenericTrie{
         items.clear();
         items = null;
         map.clear();
-        map=null;
+        map = null;
         used = null;
     }
 
     public int get(String item, int start, int length) {
-        if(LOGGER.isDebugEnabled()){
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("开始查询数据：{}", item.substring(start, start + length));
         }
-        if(base==null){
+        if (base == null) {
             return Integer.MIN_VALUE;
         }
 
@@ -222,23 +225,23 @@ public class DoubleArrayGenericTrie{
         int lastChar = base[0];
         int index;
 
-        for (int i = start; i < start+length; i++) {
+        for (int i = start; i < start + length; i++) {
             index = lastChar + (int) item.charAt(i);
-            if(index >= check.length || index < 0){
+            if (index >= check.length || index < 0) {
                 return Integer.MIN_VALUE;
             }
             if (lastChar == check[index]) {
                 lastChar = base[index];
-            }else {
+            } else {
                 return Integer.MIN_VALUE;
             }
         }
         index = lastChar;
-        if(index >= check.length || index < 0){
+        if (index >= check.length || index < 0) {
             return Integer.MIN_VALUE;
         }
         if (base[index] < 0) {
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("在词典中查到词：{}", item.substring(start, start + length));
             }
             return check[lastChar];
@@ -251,19 +254,19 @@ public class DoubleArrayGenericTrie{
     }
 
     public void putAll(Map<String, Integer> map) {
-        if(check!=null){
+        if (check != null) {
             throw new RuntimeException("addAll method can just be used once after clear method!");
         }
 
-        List<String> items=map
-                            .keySet()
-                            .stream()
-                            .sorted()
-                            .collect(Collectors.toList());
-        if(LOGGER.isDebugEnabled()){
+        List<String> items = map
+                .keySet()
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        if (LOGGER.isDebugEnabled()) {
             //for debug
-            if (items.size()<10){
-                items.forEach(item->LOGGER.debug(item+"="+map.get(item)));
+            if (items.size() < 10) {
+                items.forEach(item -> LOGGER.debug(item + "=" + map.get(item)));
             }
         }
         init(items, map);
@@ -295,10 +298,10 @@ public class DoubleArrayGenericTrie{
 
         System.out.println("查找 杨尚川：" + doubleArrayGenericTrie.get("杨尚川"));
         System.out.println("查找 章子怡：" + doubleArrayGenericTrie.get("章子怡"));
-        System.out.println("查找 刘："+doubleArrayGenericTrie.get("刘"));
+        System.out.println("查找 刘：" + doubleArrayGenericTrie.get("刘"));
         System.out.println("查找 刘亦菲：" + doubleArrayGenericTrie.get("刘亦菲"));
         System.out.println("查找 刘诗诗：" + doubleArrayGenericTrie.get("刘诗诗"));
-        System.out.println("查找 巩俐："+doubleArrayGenericTrie.get("巩俐"));
+        System.out.println("查找 巩俐：" + doubleArrayGenericTrie.get("巩俐"));
         System.out.println("查找 中国的巩俐是红高粱的主演 3 2：" + doubleArrayGenericTrie.get("中国的巩俐是红高粱的主演", 3, 2));
         System.out.println("查找 中国的巩俐是红高粱的主演 0 2：" + doubleArrayGenericTrie.get("中国的巩俐是红高粱的主演", 0, 2));
         System.out.println("查找 中国的巩俐是红高粱的主演 10 2：" + doubleArrayGenericTrie.get("中国的巩俐是红高粱的主演", 10, 2));
@@ -321,12 +324,12 @@ public class DoubleArrayGenericTrie{
 
         System.out.println("查找 杨尚川：" + doubleArrayGenericTrie.get("杨尚川"));
         System.out.println("查找 章子怡：" + doubleArrayGenericTrie.get("章子怡"));
-        System.out.println("查找 复仇者联盟2："+doubleArrayGenericTrie.get("复仇者联盟2"));
+        System.out.println("查找 复仇者联盟2：" + doubleArrayGenericTrie.get("复仇者联盟2"));
         System.out.println("查找 白掌：" + doubleArrayGenericTrie.get("白掌"));
-        System.out.println("查找 红掌："+doubleArrayGenericTrie.get("红掌"));
-        System.out.println("查找 刘亦菲："+doubleArrayGenericTrie.get("刘亦菲"));
-        System.out.println("查找 刘诗诗："+doubleArrayGenericTrie.get("刘诗诗"));
+        System.out.println("查找 红掌：" + doubleArrayGenericTrie.get("红掌"));
+        System.out.println("查找 刘亦菲：" + doubleArrayGenericTrie.get("刘亦菲"));
+        System.out.println("查找 刘诗诗：" + doubleArrayGenericTrie.get("刘诗诗"));
         System.out.println("查找 巩俐：" + doubleArrayGenericTrie.get("巩俐"));
-        System.out.println("查找 金钱树："+doubleArrayGenericTrie.get("金钱树"));
+        System.out.println("查找 金钱树：" + doubleArrayGenericTrie.get("金钱树"));
     }
 }

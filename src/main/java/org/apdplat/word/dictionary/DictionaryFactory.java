@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.dictionary;
@@ -42,44 +40,52 @@ import java.util.stream.Stream;
  * 词典工厂
  通过系统属性及配置文件指定词典实现类（dic.class）和词典文件（dic.path）
  指定方式一，编程指定（高优先级）：
-      WordConfTools.set("dic.class", "org.apdplat.word.dictionary.impl.DictionaryTrie");
-      WordConfTools.set("dic.path", "classpath:dic.txt");
+ WordConfTools.set("dic.class", "org.apdplat.word.dictionary.impl.DictionaryTrie");
+ WordConfTools.set("dic.path", "classpath:dic.txt");
  指定方式二，Java虚拟机启动参数（中优先级）：
-      java -Ddic.class=org.apdplat.word.dictionary.impl.DictionaryTrie -Ddic.path=classpath:dic.txt
+ java -Ddic.class=org.apdplat.word.dictionary.impl.DictionaryTrie -Ddic.path=classpath:dic.txt
  指定方式三，配置文件指定（低优先级）：
-      在类路径下的word.conf中指定配置信息
-      dic.class=org.apdplat.word.dictionary.impl.DictionaryTrie
-      dic.path=classpath:dic.txt
+ 在类路径下的word.conf中指定配置信息
+ dic.class=org.apdplat.word.dictionary.impl.DictionaryTrie
+ dic.path=classpath:dic.txt
  如未指定，则默认使用词典实现类（org.apdplat.word.dictionary.impl.DictionaryTrie）和词典文件（类路径下的dic.txt）
  * @author 杨尚川
  */
 public final class DictionaryFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DictionaryFactory.class);
     private static final int INTERCEPT_LENGTH = WordConfTools.getInt("intercept.length", 16);
-    private DictionaryFactory(){}
-    public static final Dictionary getDictionary(){
+
+    private DictionaryFactory() {
+    }
+
+    public static final Dictionary getDictionary() {
         return DictionaryHolder.DIC;
     }
-    public static void reload(){
+
+    public static void reload() {
         DictionaryHolder.reload();
     }
-    private static final class DictionaryHolder{
+
+    private static final class DictionaryHolder {
         private static final Dictionary DIC = constructDictionary();
-        private static Dictionary constructDictionary(){  
-            try{
+
+        private static Dictionary constructDictionary() {
+            try {
                 //选择词典实现，可以通过参数选择不同的实现
                 String dicClass = WordConfTools.get("dic.class", "org.apdplat.word.dictionary.impl.TrieV4");
-                LOGGER.info("dic.class="+dicClass);
-                return (Dictionary)Class.forName(dicClass.trim()).newInstance();
+                LOGGER.info("dic.class=" + dicClass);
+                return (Dictionary) Class.forName(dicClass.trim()).newInstance();
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
-                System.err.println("词典装载失败:"+ex.getMessage());
+                System.err.println("词典装载失败:" + ex.getMessage());
                 throw new RuntimeException(ex);
             }
         }
-        static{
+
+        static {
             reload();
         }
-        public static void reload(){
+
+        public static void reload() {
             AutoDetector.loadAndWatch(new ResourceLoader() {
 
                 @Override
@@ -106,7 +112,7 @@ public final class DictionaryFactory {
                     if (dicDumpPath != null && dicDumpPath.length() > 0) {
                         try {
                             Files.write(Paths.get(dicDumpPath), words);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             LOGGER.error("dic dump error!", e);
                         }
                     }
@@ -193,7 +199,7 @@ public final class DictionaryFactory {
         }
     }
 
-    private static void test(String dicClass) throws Exception{
+    private static void test(String dicClass) throws Exception {
         WordConfTools.set("dic.class", dicClass);
         System.gc();
         Thread.sleep(60000);
@@ -206,7 +212,7 @@ public final class DictionaryFactory {
         System.gc();
         Thread.sleep(60000);
         long start = System.currentTimeMillis();
-        for(int i=0; i<100; i++){
+        for (int i = 0; i < 100; i++) {
             words.forEach(word -> {
                 for (int j = 0; j < word.length(); j++) {
                     String sw = word.substring(0, j + 1);
@@ -221,13 +227,14 @@ public final class DictionaryFactory {
             });
         }
         long cost = System.currentTimeMillis() - start;
-        LOGGER.info(dicClass + " 未查询到的次数："+ e.get() + "， 查询到的次数：" +  h.get() + " 耗时：" + cost + " 毫秒");
+        LOGGER.info(dicClass + " 未查询到的次数：" + e.get() + "， 查询到的次数：" + h.get() + " 耗时：" + cost + " 毫秒");
         System.gc();
         Thread.sleep(60000);
         LOGGER.info("test finish");
         System.exit(0);
     }
-    public static void main(String[] args) throws Exception{
+
+    public static void main(String[] args) throws Exception {
         //速度和内存测试
         //打开 jvisualvm 后分别运行测试，不同测试位于不同进程中，避免相互影响
         //通过 jvisualvm 可以查看内存使用情况

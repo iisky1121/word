@@ -1,21 +1,19 @@
 /**
- *
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package org.apdplat.word.analysis;
@@ -45,7 +43,7 @@ public class TextSimilarityTest {
     private static final String TEXT11 = "元搜索引擎：search";
 
     @Test
-    public void testCosine(){
+    public void testCosine() {
         TextSimilarity textSimilarity = new CosineTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
@@ -53,28 +51,28 @@ public class TextSimilarityTest {
     }
 
     @Test
-    public void testEditDistance(){
+    public void testEditDistance() {
         TextSimilarity textSimilarity = new EditDistanceTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
     @Test
-    public void testEuclideanDistance(){
+    public void testEuclideanDistance() {
         TextSimilarity textSimilarity = new EuclideanDistanceTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
     @Test
-    public void testJaccard(){
+    public void testJaccard() {
         TextSimilarity textSimilarity = new JaccardTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
     @Test
-    public void testJaroDistance(){
+    public void testJaroDistance() {
         TextSimilarity textSimilarity = new JaroDistanceTextSimilarity();
         testBasic(textSimilarity);
         //JaroDistanceTextSimilarity 不合适只有很少的几个词差别的文本的相似度计算
@@ -83,7 +81,7 @@ public class TextSimilarityTest {
     }
 
     @Test
-    public void testJaroWinklerDistance(){
+    public void testJaroWinklerDistance() {
         TextSimilarity textSimilarity = new JaroWinklerDistanceTextSimilarity();
         testBasic(textSimilarity);
         //JaroWinklerDistanceTextSimilarity 不合适只有很少的几个词差别的文本的相似度计算
@@ -92,14 +90,14 @@ public class TextSimilarityTest {
     }
 
     @Test
-    public void testManhattanDistance(){
+    public void testManhattanDistance() {
         TextSimilarity textSimilarity = new ManhattanDistanceTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
     @Test
-    public void testSimHashPlusHammingDistance(){
+    public void testSimHashPlusHammingDistance() {
         TextSimilarity textSimilarity = new SimHashPlusHammingDistanceTextSimilarity();
         testBasic(textSimilarity);
         //SimHashPlusHammingDistanceTextSimilarity 不合适只有很少的几个词差别的文本的相似度计算
@@ -108,20 +106,20 @@ public class TextSimilarityTest {
     }
 
     @Test
-    public void testSimple(){
+    public void testSimple() {
         TextSimilarity textSimilarity = new SimpleTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
     @Test
-    public void testSørensenDiceCoefficient(){
+    public void testSørensenDiceCoefficient() {
         TextSimilarity textSimilarity = new SørensenDiceCoefficientTextSimilarity();
         testBasic(textSimilarity);
         testRank(textSimilarity);
     }
 
-    private void testBasic(TextSimilarity textSimilarity){
+    private void testBasic(TextSimilarity textSimilarity) {
         assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT1, TEXT1));
         assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT2, TEXT2));
         assertEquals("通样的文本应该相等", 1.0, textSimilarity.similarScore(TEXT3, TEXT3));
@@ -138,7 +136,7 @@ public class TextSimilarityTest {
         assertEquals("只有一个文本应该不相等，没有可比性", 0.0, textSimilarity.similarScore("", null));
     }
 
-    private void testRank(TextSimilarity textSimilarity){
+    private void testRank(TextSimilarity textSimilarity) {
         String text1 = "宇宙";
         String text2 = "宇宙 世界";
         String text3 = "宇宙 世界 中国";
@@ -153,7 +151,7 @@ public class TextSimilarityTest {
 
         Hits hits = textSimilarity.rank(text10, textList);
         System.out.println(textSimilarity.getClass().getSimpleName());
-        hits.getHits().forEach(hit->System.out.println(hit));
+        hits.getHits().forEach(hit -> System.out.println(hit));
         assertEquals(text10, hits.getHits().get(0).getText());
         assertEquals(text9, hits.getHits().get(1).getText());
         assertEquals(text8, hits.getHits().get(2).getText());

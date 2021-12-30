@@ -1,21 +1,19 @@
 /**
- * 
  * APDPlat - Application Product Development Platform
  * Copyright (c) 2013, 杨尚川, yang-shangchuan@qq.com
- * 
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 package org.apdplat.word.util;
@@ -39,6 +37,7 @@ import static org.junit.Assert.fail;
  */
 public class GenericTrieTest {
     private final GenericTrie<Integer> genericTrie = new GenericTrie<>();
+
     @Before
     public void setUp() {
         genericTrie.put("杨尚川", 100);
@@ -46,10 +45,12 @@ public class GenericTrieTest {
         genericTrie.put("杨尚丽", 98);
         genericTrie.put("中华人民共和国", 1);
     }
+
     @After
     public void tearDown() {
         genericTrie.clear();
     }
+
     @Test
     public void testClear() {
         assertEquals(100, genericTrie.get("杨尚川").intValue());
@@ -58,6 +59,7 @@ public class GenericTrieTest {
         assertEquals(null, genericTrie.get("杨尚川"));
         assertEquals(null, genericTrie.get("中华人民共和国"));
     }
+
     @Test
     public void testGet() {
         assertEquals(100, genericTrie.get("杨尚川").intValue());
@@ -67,38 +69,40 @@ public class GenericTrieTest {
         assertEquals(null, genericTrie.get("杨"));
         assertEquals(null, genericTrie.get("杨尚"));
     }
+
     @Test
-    public void testBigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt")).limit(1000)) {
+    public void testBigram() {
+        try (Stream<String> lines = Files.lines(Paths.get("src/main/resources/bigram.txt")).limit(1000)) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
-                if(attrs!=null && attrs.length==2){
+                if (attrs != null && attrs.length == 2) {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                     genericTrie.put(attrs[0], map.get(attrs[0]));
                 }
             });
-            map.keySet().forEach(key->assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
-        }catch (Exception e){
+            map.keySet().forEach(key -> assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
         }
     }
+
     @Test
-    public void testTrigram(){
-        try(Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt")).limit(1000)) {
+    public void testTrigram() {
+        try (Stream<String> lines = Files.lines(Paths.get("src/main/resources/trigram.txt")).limit(1000)) {
             GenericTrie<Integer> genericTrie = new GenericTrie<>();
             Map<String, Integer> map = new HashMap<>();
             lines.forEach(line -> {
                 String[] attrs = line.split("\\s+");
-                if(attrs!=null && attrs.length==2){
+                if (attrs != null && attrs.length == 2) {
                     map.put(attrs[0], Integer.parseInt(attrs[1]));
                     genericTrie.put(attrs[0], map.get(attrs[0]));
                 }
             });
-            map.keySet().forEach(key->assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
-        }catch (Exception e){
+            map.keySet().forEach(key -> assertEquals(map.get(key).intValue(), genericTrie.get(key).intValue()));
+        } catch (Exception e) {
             e.printStackTrace();
             fail();
         }
